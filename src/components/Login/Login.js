@@ -2,26 +2,27 @@ import React, { Component } from "react";
 import "./Login.css";
 import swal from "sweetalert";
 import { wait } from "@testing-library/react";
-import Navbar from '../Homepage/Navbar';
+import Navbar from "../Homepage/Navbar.js";
+
 
 class Login extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      user: "",
+        user: "",
       adminEmail: "",
       adminPassword: "",
-
+      
     };
   }
 
-  //   componentDidMount(){
-  //     console.log(localStorage.getItem('authToken'));
-  //     if(localStorage.getItem('authToken')){
-  //       window.location.href="/matches"
-  //     }
-  // }
+//   componentDidMount(){
+//     console.log(localStorage.getItem('authToken'));
+//     if(localStorage.getItem('authToken')){
+//       window.location.href="/matches"
+//     }
+// }
 
   onSubmitHandler = (e) => {
     //Validation
@@ -43,39 +44,48 @@ class Login extends Component {
         password: this.state.adminPassword,
       }),
     })
-      .then((callback) => callback.json())
-      .then((callbackJson) => {
-        console.log(callbackJson.status)
-        if (callbackJson.status === "success") {
-          localStorage.setItem("username", callbackJson.email);
-          localStorage.setItem("firstname", callbackJson.firstname);
-          localStorage.setItem("lastname", callbackJson.lastname);
-          localStorage.setItem("authToken", callbackJson._id);
-          localStorage.setItem("birthdate", callbackJson.birthdate);
-          localStorage.setItem("gender", callbackJson.gender);
-          localStorage.setItem("city", callbackJson.city);
-          localStorage.setItem("address", callbackJson.address);
-          localStorage.setItem("username", callbackJson.email);
-          swal("Logged in successfully!", "No warnings!", "success");
-          this.setState({
-            user: callbackJson.username
-          },
-            function () { console.log("setState completed", this.state, this.user) }
-          );
-
-
-          window.location.href = "/matches";
-
-        } else {
-          swal("Error!", "Incorrect Credentials", "error");
+      .then((callback) => 
+      { console.log("callback",callback)
+        localStorage.setItem("isAuth", 0);
+        if ( callback.status===200) {
+          localStorage.setItem("isAuth", 1);
         }
+        return callback.json()
+      }
+      )
+      .then((callbackJson) => {console.log(callbackJson.user.address)
+  
+        if(localStorage.getItem("isAuth")==1){
+           
+           localStorage.setItem("email", callbackJson.user.email);
+           localStorage.setItem("firstname", callbackJson.user.firstname);
+           localStorage.setItem("lastname", callbackJson.user.lastname);
+           localStorage.setItem("authToken", callbackJson.user._id);
+           localStorage.setItem("birthdate", callbackJson.user.birthdate);
+           localStorage.setItem("gender", callbackJson.user.gender);
+           localStorage.setItem("city", callbackJson.user.city);
+           localStorage.setItem("address", callbackJson.user.address);
+           localStorage.setItem("logedin", 1);
+            swal("Logged in successfully!", "No warnings!", "success");
+
+          window.location.href="/matches";
+          
+        }else{
+          swal("Error!", "Incorrect Credentials", "error");
+         }
       })
 
       .catch((error) => {
         console.log(error);
       });
+      
+      this.setState({
+      user: "",
+      adminEmail: "",
+      adminPassword: "",
+      });
     //   console.log("setState completed", this.state , this.user)
-  };
+  }; 
 
   onChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -87,56 +97,57 @@ class Login extends Component {
 
   render() {
     return (
-      <div>        <Navbar />
-        <div className="login-parent">
-
-          <div className="login-name">
-
-          </div>
-          <div className="login-form">
-            <form onSubmit={this.onSubmitHandler}>
-              <div className="form-group">
-                <label htmlFor="exampleInputEmail1" className={"text-white"}>
-                  <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Admin Name
+      <div>
+      <Navbar/>
+      <div className="login-parent">
+       
+        <div className="login-name">
+        
+        </div>
+        <div className="login-form">
+          <form onSubmit={this.onSubmitHandler}>
+            <div className="form-group">
+              <label htmlFor="exampleInputEmail1" className={"text-white"}>
+                <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Admin Name
               </label>
-                <input
-                  name="adminEmail"
-                  onChange={this.onChangeHandler}
-                  type="email"
-                  className="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                  value={this.state.adminEmail}
-                  required
-                />
-              </div>
+              <input
+                name="adminEmail"
+                onChange={this.onChangeHandler}
+                type="email"
+                className="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                value={this.state.adminEmail}
+                required
+              />
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="exampleInputPassword1" className={"text-white"}>
-                  <i class="fa fa-unlock-alt" aria-hidden="true"></i>&nbsp;Admin
+            <div className="form-group">
+              <label htmlFor="exampleInputPassword1" className={"text-white"}>
+                <i class="fa fa-unlock-alt" aria-hidden="true"></i>&nbsp;Admin
                 Password
               </label>
-                <input
-                  name="adminPassword"
-                  onChange={this.onChangeHandler}
-                  type="password"
-                  className="form-control"
-                  id="exampleInputPassword1"
-                  value={this.state.adminPassword}
-                  required
-                />
-              </div>
+              <input
+                name="adminPassword"
+                onChange={this.onChangeHandler}
+                type="password"
+                className="form-control"
+                id="exampleInputPassword1"
+                value={this.state.adminPassword}
+                required
+              />
+            </div>
 
-              <button
-                type="button"
-                className="submit-button"
-                onClick={() => this.onSubmitHandler()}
-              >
-                <i className="fa fa-send"></i>&nbsp; Login
+            <button
+              type="button"
+              className="submit-button"
+              onClick={() => this.onSubmitHandler()}
+            >
+              <i className="fa fa-send"></i>&nbsp; Login
             </button>
-            </form>
-          </div>
+          </form>
         </div>
+      </div>
       </div>
     );
   }
