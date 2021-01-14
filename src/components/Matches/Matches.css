@@ -1,0 +1,27 @@
+.main-title{
+    margin-top: 3%;
+    margin-left: 40%;
+    color: wheat;
+}
+
+.match-bar{
+    margin-left: 5%;
+    background-color: wheat;
+    width: 80%;
+    display: inline-block;
+    height: 200px;
+}
+
+.team1{
+    align-self: flex-start;
+}
+
+.team1{
+    align-self: flex-end;
+}
+
+.card-obj{
+    margin-top: 1%;
+    margin-left: 9%;
+    width: 80%;
+}
